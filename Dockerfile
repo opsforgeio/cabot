@@ -39,6 +39,8 @@ RUN pip install ipdb
 
 ADD . /code/
 
+COPY docker-entrypoint.sh ./
+
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
 CMD ["-c"]
