@@ -39,8 +39,10 @@ RUN pip install ipdb
 
 ADD . /code/
 
-COPY docker-entrypoint.sh ./
+COPY docker-entrypoint.sh /root/
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+RUN chmod 0755 /root/docker-entrypoint.sh
+
+ENTRYPOINT ["/root/docker-entrypoint.sh"]
 
 CMD ["-c"]
