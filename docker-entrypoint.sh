@@ -1,23 +1,29 @@
 #!/bin/bash
 
-set -e
+# This is a custom entrypoint for the Rancherized Cabot. Don't change it.
 
-# first check if we're passing flags, if so
-# prepend with sentry
-if [ "${1:0:1}" = '-' ]; then
-	set -- python manage.py "$@"
+apt-get update
+apt-get install expect -y
+
+# Always run the prep script unconditionally as it does no harm but helps if something is broken
+
+bash bin/build-app
+
+manage.py createsuperuser --username=admin --email=admin@noreply.com --noinput
+
+if [ $? -eq 0 ] ; then
+  # User account did not exist, setting password from env var in Rancher
+  expect password.exp ${PASSWORD}
 fi
 
-case "$1" in
-"web")
-	set -- gunicorn cabot.wsgi:application --config gunicorn.conf
-	;;
-"beatworker")
-    set -- celery worker -B -A cabot --loglevel=INFO --concurrency=16 -Ofair
-    ;;
-"worker")
-    set -- celery worker -A cabot --loglevel=INFO --concurrency=16 -Ofair
-    ;;
-esac
-
-exec "$@"
+if [ echo "$ROLE" | grep frontend ] ; then
+  # Role is frontend, exec the relevant command
+  python manage.py runserver 0.0.0.0:80
+elif [echo "$ROLE" | grep worker ] ; then
+  # Role is frontend, exec the relevant command
+  python manage.py celery worker -B -A cabot --loglevel=DEBUG --concurrency=16 -Ofair
+else
+  # Invalid role
+  echo "Role error - no role specified or inavlid entry. Use frontend or worker. Exiting."
+  exit 1
+fi
