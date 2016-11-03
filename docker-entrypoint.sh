@@ -8,6 +8,7 @@ apt-get install expect -y
 # Always run the prep script unconditionally as it does no harm but helps if something is broken
 
 bash bin/build-app
+python manage.py syncdb
 
 manage.py createsuperuser --username=admin --email=admin@noreply.com --noinput
 
