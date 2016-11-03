@@ -44,5 +44,3 @@ COPY docker-entrypoint.sh /root/
 RUN chmod 0755 /root/docker-entrypoint.sh
 
 ENTRYPOINT ["/root/docker-entrypoint.sh"]
-
-CMD ["-c"]
