@@ -10,7 +10,7 @@ apt-get install expect -y
 bash bin/build-app
 python manage.py syncdb
 
-manage.py createsuperuser --username=admin --email=admin@noreply.com --noinput
+python manage.py createsuperuser --username=admin --email=admin@noreply.com --noinput
 
 if [ $? -eq 0 ] ; then
   # User account did not exist, setting password from env var in Rancher
