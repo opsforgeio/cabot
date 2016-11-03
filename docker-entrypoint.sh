@@ -17,10 +17,10 @@ if [[ $? -eq 0 ]] ; then
   expect password.exp ${PASSWORD}
 fi
 
-if [[ echo "$ROLE" | grep frontend ]] ; then
+if echo "$ROLE" | grep frontend ; then
   # Role is frontend, exec the relevant command
   python manage.py runserver 0.0.0.0:80
-elif [[ echo "$ROLE" | grep worker ]] ; then
+elif echo "$ROLE" | grep worker ; then
   # Role is frontend, exec the relevant command
   python manage.py celery worker -B -A cabot --loglevel=DEBUG --concurrency=16 -Ofair
 else
